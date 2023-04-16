@@ -93,7 +93,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
 
   # Call foreach:
   out_P <- foreach(b = 1:nP,
-                   .packages = c("mlVAR", "MXN"),
+                   .packages = c("mlVAR"),
                    .export = c("m_data_cmb", "vars", "idvar", "estimator",
                                "contemporaneous", "temporal", "totalN", "v_Ns",
                                "v_ids"),
@@ -109,6 +109,8 @@ mlVAR_GC <- function(data1, # dataset of group 1
                      data_h0_1 <- m_data_cmb[v_ids %in% v_ids_1, ]
                      data_h0_2 <- m_data_cmb[v_ids %in% v_ids_2, ]
                      l_data_h0 <- list(data_h0_1, data_h0_2)
+
+                     browser()
 
                      # --- Fit mlVAR models ---
 
@@ -137,7 +139,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
                                                 contemporaneous = contemporaneous,
                                                 temporal = temporal,
                                                 nCores = 1,
-                                                dayvar = dayvar,
+                                                dayvar = dayvar, # now also provided
                                                 beepvar = beepvar,
                                                 verbose = FALSE,
                                                 lags = 1) # TODO: later allow also higher order lags (see also below)
