@@ -110,7 +110,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
                      data_h0_2 <- m_data_cmb[v_ids %in% v_ids_2, ]
                      l_data_h0 <- list(data_h0_1, data_h0_2)
 
-                     browser()
+                     # browser()
 
                      # --- Fit mlVAR models ---
 
