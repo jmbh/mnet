@@ -1,0 +1,18 @@
+\name{mnet-internal}
+
+\title{Internal mnet functions}
+
+\alias{Process_mlVAR}
+\alias{data1}
+\alias{data2}
+
+\description{Internal mgm functions.}
+
+\author{Jonas Haslbeck <jonashaslbeck@protonmail.com>}
+
+\details{
+  These are internal functions or datasets. Process_mlVAR() is a function that takes the output of two mlVAR-objects (from the mlVAR package) and extracts all relevant parameters and their group differences.
+}
+
+\keyword{internal}
+
