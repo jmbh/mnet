@@ -93,7 +93,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
 
   # Call foreach:
   out_P <- foreach(b = 1:nP,
-                   .packages = c("mlVAR"),
+                   .packages = c("mlVAR", "mnet"),
                    .export = c("m_data_cmb", "vars", "idvar", "estimator",
                                "contemporaneous", "temporal", "totalN", "v_Ns",
                                "v_ids"),
@@ -109,8 +109,6 @@ mlVAR_GC <- function(data1, # dataset of group 1
                      data_h0_1 <- m_data_cmb[v_ids %in% v_ids_1, ]
                      data_h0_2 <- m_data_cmb[v_ids %in% v_ids_2, ]
                      l_data_h0 <- list(data_h0_1, data_h0_2)
-
-                     # browser()
 
                      # --- Fit mlVAR models ---
 
@@ -147,8 +145,9 @@ mlVAR_GC <- function(data1, # dataset of group 1
 
                        if(saveModels) l_models[[j]] <- l_pair_b[[j]]
 
-
                      } # end loop: J=2 groups
+
+                     # browser()
 
                      # All differences are: Group 1 - Group 2
                      diffs_b <- Process_mlVAR(object1 = l_pair_b[[1]],
@@ -250,7 +249,9 @@ mlVAR_GC <- function(data1, # dataset of group 1
 
   # a) between
   m_pval_btw <- matrix(NA, p, p)
-  for(i in 2:p) for(j in 1:(i-1)) m_pval_btw[i,j] <- mean(abs(a_between[i,j,])>abs(diffs_true$diff_between[i,j]))
+  for(i in 2:p) for(j in 1:(i-1)) m_pval_btw[i,j] <- mean(abs(a_between[i,j,])>abs(diffs_true$diff_between[i,j]), na.rm=TRUE)
+  # Note: the na.rm=TRUE in the means is there so we can exclude the rare cases in which between-networks
+  #       have not been calculated, because random effects variances of intercepts were set to zero
 
   # b.1) VAR: fixed effects
   m_pval_phi_fix <- matrix(NA, p, p)

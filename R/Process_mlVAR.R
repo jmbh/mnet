@@ -1,4 +1,4 @@
-# jonashaslbeck@protonmail; April 5, 2023
+# jonashaslbeck@protonmail; April 17, 2023
 
 # ------------------------------------------------------------
 # -------- Function to Process mlVAR Outputs -----------------
@@ -14,8 +14,24 @@ Process_mlVAR <- function(object1,
   p <- ncol(object1$results$Gamma_Omega_mu$mean)
 
   # a) Between network (using function from mlVAR package)
-  btw_1 <- mlVAR::getNet(object1, "between", nonsig="show")
-  btw_2 <- mlVAR::getNet(object2, "between", nonsig="show")
+  # For very low number of subjects close to the boundary of identifiability
+  # it is possible that lme4 in mlVAR estimates zero variances for random intercepts
+  # which then does not allow one to estimate the between person network
+  # for these cases we set the differences to zero here; later, when calculating
+  # p-values we will just exclude those cases
+
+  # browser()
+
+  if(any(is.na(object1$results$Omega_mu$pcor$mean))) {
+    btw_1 <- matrix(NA, p, p)
+  } else {
+    btw_1 <- mlVAR::getNet(object1, "between", nonsig="show")
+  }
+  if(any(is.na(object2$results$Omega_mu$pcor$mean))) {
+    btw_2 <- matrix(NA, p, p)
+  } else {
+    btw_2 <- mlVAR::getNet(object2, "between", nonsig="show")
+  }
   btw_diff <- btw_1 - btw_2
 
   # b.1) VAR: fixed effects
