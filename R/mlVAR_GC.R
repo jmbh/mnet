@@ -1,4 +1,4 @@
-# jonashaslbeck@protonmail; April 5, 2023
+# jonashaslbeck@protonmail; April 17, 2023
 
 # ------------------------------------------------------------
 # -------- Function for Permutation Test ---------------------
@@ -178,8 +178,6 @@ mlVAR_GC <- function(data1, # dataset of group 1
   # b.2) VAR/phi random effects sds
   # c.1) Contemp./Gamma fixed effects
   # c.2) Contemp./Gamma random effects sds
-  # - I guess mean estimates make no sense, since we centered within-person
-  # TODO: Later: Also output sampling distributions for correlations between REs, if specified
   # Create Storage
   a_between <- array(NA, dim=c(p, p, nP))
   a_phi_fixed <- array(NA, dim=c(p, p, nP))

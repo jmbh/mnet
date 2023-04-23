@@ -14,5 +14,7 @@
   These are internal functions or datasets. Process_mlVAR() is a function that takes the output of two mlVAR-objects (from the mlVAR package) and extracts all relevant parameters and their group differences.
 }
 
+\value{List different internal functions, different return values.}
+
 \keyword{internal}
 

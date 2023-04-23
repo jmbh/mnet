@@ -83,7 +83,7 @@ Jonas Haslbeck <jonashaslbeck@protonmail.com>
 
 \examples{
 
-\dontrun{
+\donttest{
 
 # Use simulated example data loaded with package
 head(data1)
@@ -94,8 +94,8 @@ out <- mlVAR_GC(data1 = data1,
                 data2 = data2,
                 vars = c("V1", "V2", "V3"),
                 idvar = "id",
-                nCores = 4, # choose max cores possible on your machine
-                nP = 50) # Should be more in practice, see paper!
+                nCores = 2, # choose max cores possible on your machine
+                nP = 2) # Should be more in practice, see paper!
 
 # P-values for the five parameter types:
 out$Pval

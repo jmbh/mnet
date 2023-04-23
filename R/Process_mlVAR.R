@@ -20,8 +20,6 @@ Process_mlVAR <- function(object1,
   # for these cases we set the differences to zero here; later, when calculating
   # p-values we will just exclude those cases
 
-  # browser()
-
   if(any(is.na(object1$results$Omega_mu$pcor$mean))) {
     btw_1 <- matrix(NA, p, p)
   } else {
