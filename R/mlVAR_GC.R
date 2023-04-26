@@ -87,7 +87,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
     registerDoParallel(cl)
   }
 
-  if(pbar) pb <- txtProgressBar(0, nP+1, style = 3)
+  if(pbar) pb <- txtProgressBar(0, nP+1, style = 3) else pb <- NULL
 
   timer_total <- proc.time()[3]
 
@@ -96,7 +96,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
                    .packages = c("mlVAR", "mnet"),
                    .export = c("m_data_cmb", "vars", "idvar", "estimator",
                                "contemporaneous", "temporal", "totalN", "v_Ns",
-                               "v_ids"),
+                               "v_ids", "pb"),
                    .verbose = verbose) %dopar% {
 
                      # --- Make permutation ---
