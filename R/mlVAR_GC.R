@@ -32,7 +32,9 @@ mlVAR_GC <- function(data1, # dataset of group 1
   # ------ Input Checks -----
 
   # (1) Are the data numerical?
-  v_class <- apply(cbind(data1[, vars], data2[, vars]), 2, function(x) class(x))
+  v_class <- apply(data1[, vars], 2, function(x) class(x))
+  if(any( !(v_class %in% c("numeric", "integer")) )) stop("Modeled variables need to be provided as integer or numeric variables.")
+  v_class <- apply(data2[, vars], 2, function(x) class(x))
   if(any( !(v_class %in% c("numeric", "integer")) )) stop("Modeled variables need to be provided as integer or numeric variables.")
 
   # (2) Can we find the all variables?
@@ -96,7 +98,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
                    .packages = c("mlVAR", "mnet"),
                    .export = c("m_data_cmb", "vars", "idvar", "estimator",
                                "contemporaneous", "temporal", "totalN", "v_Ns",
-                               "v_ids", "pb"),
+                               "v_ids", "pb", "pbar", "dayvar", "beepvar"),
                    .verbose = verbose) %dopar% {
 
                      # --- Make permutation ---
@@ -110,6 +112,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
                      data_h0_2 <- m_data_cmb[v_ids %in% v_ids_2, ]
                      l_data_h0 <- list(data_h0_1, data_h0_2)
 
+
                      # --- Fit mlVAR models ---
 
                      # Output list
@@ -117,6 +120,8 @@ mlVAR_GC <- function(data1, # dataset of group 1
                      l_models <- list()
 
                      for(j in 1:2) {
+
+                       # browser()
 
                        # TODO: make this variable specification of dayvar/beepvar less hacky
                        if(is.null(dayvar)) {
