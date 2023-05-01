@@ -277,7 +277,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
 
   if(saveModels) l_out_ret <- l_out_mods else l_out_ret <- NULL
 
-  outlist <- list("TrueDiffs" = list("Between" = diffs_true$diff_between,
+  outlist <- list("EmpDiffs" = list("Between" = diffs_true$diff_between,
                                      "Phi_mean" = diffs_true$diff_phi_fix,
                                      "Phi_sd" = diffs_true$diff_phi_RE_sd,
                                      "Gam_mean" = diffs_true$diff_gam_fix,
