@@ -293,6 +293,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
                                     "Gam_mean" = a_gam_fixed,
                                     "Gam_sd" = a_gam_RE_sd),
                   "Models" = l_out_ret,
+                  "ModelsEmp" = l_out_emp,
                   "Runtime_min" = runtime / 60)
 
   # ------ Return Output -----
