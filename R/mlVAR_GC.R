@@ -12,12 +12,12 @@
 # - sampling distribution for each parameter
 # - test statistic based on the mlVAR models estimated on the two datasets
 
-mlVAR_GC <- function(data1, # dataset of group 1
-                     data2, # dataset of group 2
+mlVAR_GC <- function(data, # data including both groups
                      vars, # variables to be included in mlVAR (same in both data sets)
                      idvar, # variable indicating the nesting/subject id (same in both data sets)
                      dayvar = NULL,
                      beepvar = NULL,
+                     groups, # indicates which case belongs to which group
                      estimator, # same as in ml
                      contemporaneous, # same as in ml
                      temporal, # same as in ml
@@ -32,18 +32,22 @@ mlVAR_GC <- function(data1, # dataset of group 1
   # ------ Input Checks -----
 
   # (1) Are the data numerical?
-  v_class <- apply(data1[, vars], 2, function(x) class(x))
-  if(any( !(v_class %in% c("numeric", "integer")) )) stop("Modeled variables need to be provided as integer or numeric variables.")
-  v_class <- apply(data2[, vars], 2, function(x) class(x))
+  v_class <- apply(data[, vars], 2, function(x) class(x))
   if(any( !(v_class %in% c("numeric", "integer")) )) stop("Modeled variables need to be provided as integer or numeric variables.")
 
   # (2) Can we find the all variables?
-  check_coln1 <- c(vars, idvar) %in% colnames(data1)
-  if(any(!check_coln1)) stop("Specified variable names could not be found in dataset 1.")
-  check_coln2 <- c(vars, idvar) %in% colnames(data2)
-  if(any(!check_coln2)) stop("Specified variable names could not be found in dataset 2.")
+  check_coln1 <- c(vars, idvar) %in% colnames(data)
+  if(any(!check_coln1)) stop("Specified variable names could not be found in the data.")
 
-  # (3) Are IDs unique across datasets?
+  # browser()
+
+  # (3) Is the grouping variable specified properly?
+  if(any(!(data[, groups] %in% 1:2))) stop("Groups need to be specified by a vector of 1s and 2s referring to the two groups.")
+
+  # (4) Are IDs unique across datasets?
+  data1 <- data[data[, groups]==1, ]
+  data2 <- data[data[, groups]==2, ]
+
   # Get IDs
   ids1 <- sapply(data1[, idvar], as.character)
   ids2 <- sapply(data2[, idvar], as.character)
@@ -54,7 +58,6 @@ mlVAR_GC <- function(data1, # dataset of group 1
 
   v_intersec <- intersect(u_ids1, u_ids2)
   if(length(v_intersec) > 0) stop("IDs need to be unique across two datasets.")
-
 
   # ------ Collect passed down arguments -----
   if(missing(estimator)) estimator <- "default"
@@ -101,6 +104,7 @@ mlVAR_GC <- function(data1, # dataset of group 1
                                "v_ids", "pb", "pbar", "dayvar", "beepvar"),
                    .verbose = verbose) %dopar% {
 
+
                      # --- Make permutation ---
                      # This is done in a way that keeps the size in each group exactly the same as in the real groups
                      v_ids_rnd <- v_u_ids[sample(1:totalN, size=totalN, replace=FALSE)]
@@ -120,8 +124,6 @@ mlVAR_GC <- function(data1, # dataset of group 1
                      l_models <- list()
 
                      for(j in 1:2) {
-
-                       # browser()
 
                        # TODO: make this variable specification of dayvar/beepvar less hacky
                        if(is.null(dayvar)) {
@@ -278,10 +280,10 @@ mlVAR_GC <- function(data1, # dataset of group 1
   if(saveModels) l_out_ret <- l_out_mods else l_out_ret <- NULL
 
   outlist <- list("EmpDiffs" = list("Between" = diffs_true$diff_between,
-                                     "Phi_mean" = diffs_true$diff_phi_fix,
-                                     "Phi_sd" = diffs_true$diff_phi_RE_sd,
-                                     "Gam_mean" = diffs_true$diff_gam_fix,
-                                     "Gam_sd" = diffs_true$diff_gam_RE_sd),
+                                    "Phi_mean" = diffs_true$diff_phi_fix,
+                                    "Phi_sd" = diffs_true$diff_phi_RE_sd,
+                                    "Gam_mean" = diffs_true$diff_gam_fix,
+                                    "Gam_sd" = diffs_true$diff_gam_RE_sd),
                   "Pval" = list("Between" = m_pval_btw,
                                 "Phi_mean" = m_pval_phi_fix,
                                 "Phi_sd" = m_pval_phi_RE_sd,

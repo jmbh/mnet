@@ -10,7 +10,7 @@ Does inference on group differences in mlVAR models using a permutation test. Th
 }
 \usage{
 mlVAR_GC(data1, data2, vars, idvar, dayvar = NULL,
-         beepvar = NULL, estimator, contemporaneous,
+         beepvar = NULL, groups, estimator, contemporaneous,
          temporal, nCores = 1, nP = 500, saveModels = FALSE,
          verbose = FALSE, pbar = TRUE)
 }
@@ -25,13 +25,16 @@ mlVAR_GC(data1, data2, vars, idvar, dayvar = NULL,
 A character vector with the column names of the variables that should be included in the mlVAR models.
 }
   \item{idvar}{
-A character indicating the column name of the unique subject id.
+The name of the column containing the unique subject id.
 }
   \item{dayvar}{
-String indicating assessment day. Adding this argument makes sure that the first measurement of a day is not regressed on the last measurement of the previous day. IMPORTANT: only add this if the data has multiple observations per day. See also \code{mlVAR()}.
+Optional: The name of the column indicating assessment day. Adding this argument makes sure that the first measurement of a day is not regressed on the last measurement of the previous day. IMPORTANT: only add this if the data has multiple observations per day. See also \code{mlVAR()}.
 }
   \item{beepvar}{
-Optional string indicating assessment beep per day. Adding this argument will cause non-consecutive beeps to be treated as missing! See also \code{mlVAR()}.
+Optional: The name of the column indicating measurement occasion per day. Adding this argument will cause non-consecutive beeps to be treated as missing! See also \code{mlVAR()}.
+}
+  \item{groups}{
+The name of the column indicating group membership.
 }
   \item{estimator}{
 The estimator to be used. \code{"lmer"} for sequential univariate multi-level estimation, \code{"Mplus"} for multivariate Bayesian estimation (requires Mplus), and \code{"lm"} for fixed effects estimation. See also \code{mlVAR()}.
@@ -87,14 +90,13 @@ Jonas Haslbeck <jonashaslbeck@protonmail.com>
 \donttest{
 
 # Use simulated example data loaded with package
-head(data1)
-head(data2)
+head(ExampleData)
 
 # Call Permutation test
-out <- mlVAR_GC(data1 = data1,
-                data2 = data2,
+out <- mlVAR_GC(data = ExampleData,
                 vars = c("V1", "V2", "V3"),
                 idvar = "id",
+                groups = "group",
                 nCores = 2, # choose max cores possible on your machine
                 nP = 2) # Should be more in practice, see paper!
 
@@ -107,11 +109,11 @@ out$Pval$Phi_mean[1,2]
 
 # The observed group differences (i.e., the test statistics)
 # Can be found in:
-out$TrueDiffs
+out$EmpDiffs
 
 # Specifically, the difference is: group 1 - group 2
 # For example:
-out$TrueDiffs$Phi_mean[1,2,]
+out$EmpDiffs$Phi_mean[1,2,]
 # The true group difference was -0.4
 
 }
