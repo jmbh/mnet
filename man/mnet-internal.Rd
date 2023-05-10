@@ -5,6 +5,7 @@
 \alias{Process_mlVAR}
 \alias{data1}
 \alias{data2}
+\alias{dataFried}
 
 \description{Internal mgm functions.}
 
