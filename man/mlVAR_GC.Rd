@@ -69,7 +69,7 @@ The output consists of a list with the following entries:
 \value{
 Returns a list with the following entries:
 
-  \item{EmpDiffs}{A list containing five matrices with the empirically observed differences in the between-person network, the fixed and random effects variances of the temporal network, and the fixed and random effects variances of the contemporaneous network.}
+  \item{EmpDiffs}{A list containing five matrices with the empirically observed differences (Group 1 - Group 2) in the between-person network, the fixed and random effects variances of the temporal network, and the fixed and random effects variances of the contemporaneous network.}
   \item{Pval}{Same structure as \code{TrueDiffs} but provides p-values for the corresponding observed group differences.}
   \item{SampDist}{A list of arrays, containing the sampling distributions for between-person network, the fixed and random effects variances of the temporal network, and the fixed and random effects variances of the contemporaneous network.}
   \item{Models}{If \code{saveModels = TRUE}, this contains a list with all pairs of mlVAR models for each permutation.}
