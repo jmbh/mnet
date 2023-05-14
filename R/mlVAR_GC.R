@@ -39,14 +39,13 @@ mlVAR_GC <- function(data, # data including both groups
   check_coln1 <- c(vars, idvar) %in% colnames(data)
   if(any(!check_coln1)) stop("Specified variable names could not be found in the data.")
 
-  # browser()
-
   # (3) Is the grouping variable specified properly?
-  if(any(!(data[, groups] %in% 1:2))) stop("Groups need to be specified by a vector of 1s and 2s referring to the two groups.")
+  v_groups <- as.numeric(unlist(data[, groups]))
+  if(any(!(v_groups %in% 1:2))) stop("Groups need to be specified by a vector of 1s and 2s referring to the two groups.")
 
   # (4) Are IDs unique across datasets?
-  data1 <- data[data[, groups]==1, ]
-  data2 <- data[data[, groups]==2, ]
+  data1 <- data[v_groups==1, ]
+  data2 <- data[v_groups==2, ]
 
   # Get IDs
   ids1 <- sapply(data1[, idvar], as.character)
