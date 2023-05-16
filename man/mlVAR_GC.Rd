@@ -9,7 +9,7 @@ Testing Group Differences in mlVAR
 Does inference on group differences in mlVAR models using a permutation test. The function is a wrapper around the function \code{mlVAR()} from the \code{mlVAR} package.
 }
 \usage{
-mlVAR_GC(data1, data2, vars, idvar, dayvar = NULL,
+mlVAR_GC(data, vars, idvar, dayvar = NULL,
          beepvar = NULL, groups, test = "permutation",
          estimator, contemporaneous, temporal, nCores = 1,
          nP = 500, saveModels = FALSE, verbose = FALSE,

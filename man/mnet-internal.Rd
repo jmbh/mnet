@@ -3,6 +3,7 @@
 \title{Internal mnet functions}
 
 \alias{Process_mlVAR}
+\alias{print.mlVAR_GC}
 \alias{ExampleData}
 \alias{dataFried}
 
