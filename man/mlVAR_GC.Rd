@@ -10,16 +10,15 @@ Does inference on group differences in mlVAR models using a permutation test. Th
 }
 \usage{
 mlVAR_GC(data1, data2, vars, idvar, dayvar = NULL,
-         beepvar = NULL, groups, test, estimator,
-         contemporaneous, temporal, nCores = 1, nP = 500,
-         saveModels = FALSE, verbose = FALSE, pbar = TRUE)
+         beepvar = NULL, groups, test = "permutation",
+         estimator, contemporaneous, temporal, nCores = 1,
+         nP = 500, saveModels = FALSE, verbose = FALSE,
+         pbar = TRUE)
 }
 
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data1}{The data.frame containing the data of Group 1 (rows=cases, columns=variables) including the variables to be modeled, a unique id per subject, and potentially additional variables about the measurement procedure (see \code{dayvar} and \code{dayvar} below).
-}
-  \item{data2}{The data.frame containing the data of Group 2.
+  \item{data}{The data.frame containing the data (rows=cases, columns=variables) including the variables to be modeled, a unique id per subject, and potentially additional variables about the measurement procedure (see \code{dayvar} and \code{dayvar} below).
 }
   \item{vars}{
 A character vector with the column names of the variables that should be included in the mlVAR models.

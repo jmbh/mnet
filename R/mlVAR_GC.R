@@ -70,6 +70,21 @@ mlVAR_GC <- function(data, # data including both groups
   if(missing(temporal)) temporal <- "orthogonal"
   if(missing(nCores)) nCores <- 1
 
+  # Copy call
+  Call <- list("vars" = vars,
+               "idvar" = idvar,
+               "dayvar" = dayvar,
+               "beepvar" = beepvar,
+               "groups" = groups,
+               "test" = test,
+               "estimator" = estimator,
+               "contemporaneous" = contemporaneous,
+               "temporal" = temporal,
+               "nCores" = nCores,
+               "nP" = nP,
+               "saveModels" = saveModels,
+               "verbose" = verbose,
+               "pbar" = pbar)
 
   # ------ Get Basic Info -----
 
@@ -285,7 +300,8 @@ mlVAR_GC <- function(data, # data including both groups
 
     # ------ Create Output List -----
 
-    outlist <- list("EmpDiffs" = list("Lagged_fixed" = diffs_true$diff_phi_fix,
+    outlist <- list("Call" = Call,
+                    "EmpDiffs" = list("Lagged_fixed" = diffs_true$diff_phi_fix,
                                       "Lagged_random" = diffs_true$diff_phi_RE_sd,
                                       "Comtemp_fixed" = diffs_true$diff_gam_fix,
                                       "Comtemp_random" = diffs_true$diff_gam_RE_sd,
@@ -344,14 +360,15 @@ mlVAR_GC <- function(data, # data including both groups
 
     # ------ Create Output List -----
 
-    outlist <- list("EmpDiffs" = list("Lagged_fixed" = diffs_true$diff_phi_fix,
+    outlist <- list("Call" = Call,
+                    "EmpDiffs" = list("Lagged_fixed" = diffs_true$diff_phi_fix,
                                       "Lagged_random" = diffs_true$diff_phi_RE_sd,
                                       "Comtemp_fixed" = diffs_true$diff_gam_fix,
                                       "Comtemp_random" = diffs_true$diff_gam_RE_sd,
-                                      "Between" = diffs_true$diff_between,),
+                                      "Between" = diffs_true$diff_between),
                     "Pval" = list("Lagged_fixed" = m_pval_phi_fix,
-                                   "Comtemp_fixed" = m_pval_gam_fixed,
-                                   "Between" = m_betw_sign),
+                                  "Comtemp_fixed" = m_pval_gam_fixed,
+                                  "Between" = m_betw_sign),
                     "ModelsEmp" = l_out_emp,
                     "Runtime_min" = runtime / 60)
 
@@ -361,8 +378,9 @@ mlVAR_GC <- function(data, # data including both groups
 
   # ------ Return Output -----
 
-  return(outlist)
+  class(outlist) <- c("list", "mlVAR_GC")
 
+  return(outlist)
 
 } # eoF
 

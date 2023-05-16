@@ -13,7 +13,7 @@ test_that("mlVAR Perm Test check: P-values", {
                   nP = 5)
 
   # Check whether group difference is the same
-  expect_equal(out$Pval$Phi_mean[1,2],  0)
+  expect_equal(out$Pval$Lagged_fixed[1,2],  0)
 
 })
 

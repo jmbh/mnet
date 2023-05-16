@@ -69,10 +69,9 @@ For example, we see that the group difference for the cross lagged effect 2->1 i
 We can also inspect the exact sampling distributions. Let's again consider the cross lagged effect 2->1:
 
 ```{r, fig.align="center", fig.width=7, fig.height=5}
-
-hist(output$SampDist$Phi_mean[1,2,], 
+hist(output$SampDist$Lagged_fixed[1,2,], 
      xlim=c(-.5, .5), main="", xlab="Parameter Value")
-abline(v=output$EmpDiffs$Phi_mean[1,2,], col="orange")
+abline(v=output$EmpDiffs$Lagged_fixed[1,2,], col="orange")
 legend("topright", legend="Test-statistic", text.col="orange", bty="n")
 ```
 

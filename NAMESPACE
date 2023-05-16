@@ -9,3 +9,6 @@ importFrom("mlVAR", "getNet")
 import("foreach")
 import("parallel")
 import("doParallel")
+
+# Exported S3 Methods
+S3method(print, mlVAR_GC)
