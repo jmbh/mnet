@@ -2,4 +2,5 @@ Changes in Version 0.1.1
   o Fixed bug in input checks
   o Changed how groups are provided to the function mlVAR_GC; before with two separate arguments, now we specify a column name with the group variable to make it more consistent with the other arguments
   o Included empirical data of Fried et al. (2022)
+  o Added a parametric test for fixed lagged, fixed contemporaneous, and between network parameters
 

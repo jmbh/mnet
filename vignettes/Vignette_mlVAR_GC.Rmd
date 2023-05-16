@@ -27,8 +27,8 @@ To illustrate the permutation test for group differences in multilevel VAR model
 ```{r}
 data("ExampleData")
 
-dim(data)
-head(data)
+dim(ExampleData)
+head(ExampleData)
 
 ```
 
@@ -41,7 +41,7 @@ set.seed(1) # reproducibility
 
 timer <- proc.time()[3]
 
-output <- mlVAR_GC(data = data, 
+output <- mlVAR_GC(data = ExampleData, 
                    vars = c("V1", "V2", "V3"), 
                    idvar = "id",
                    groups = "group",
