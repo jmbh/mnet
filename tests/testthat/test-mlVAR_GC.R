@@ -5,7 +5,7 @@ test_that("mlVAR Perm Test check: P-values", {
   set.seed(1)
 
   # Call Permutation test on exampe data
-  out <- mlVAR_GC(data1 = ExampleData,
+  out <- mlVAR_GC(data = ExampleData,
                   vars = c("V1", "V2", "V3"),
                   idvar = "id",
                   groups = "group",
