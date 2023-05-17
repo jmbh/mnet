@@ -317,7 +317,6 @@ mlVAR_GC <- function(data, # data including both groups
                                       "Comtemp_random" = a_gam_RE_sd,
                                       "Between" = a_between),
                     "Models" = l_out_ret,
-                    "ModelsEmp" = l_out_emp,
                     "Runtime_min" = runtime / 60)
 
   } # end if: permutation
@@ -369,7 +368,6 @@ mlVAR_GC <- function(data, # data including both groups
                     "Pval" = list("Lagged_fixed" = m_pval_phi_fix,
                                   "Comtemp_fixed" = m_pval_gam_fixed,
                                   "Between" = m_betw_sign),
-                    "ModelsEmp" = l_out_emp,
                     "Runtime_min" = runtime / 60)
 
   } # end if: test=parametric
