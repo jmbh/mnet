@@ -332,7 +332,7 @@ mlVAR_GC <- function(data, # data including both groups
     bet_2 <- l_out_emp[[2]]$results$Beta$mean[, , 1]
     bet_2se <- l_out_emp[[2]]$results$Beta$SE[, , 1]
     t_stat <- abs(bet_1-bet_2)/ sqrt(bet_1se^2 + bet_2se^2)
-    m_pval_phi_fix <- pt(t_stat, n_subj-1)
+    m_pval_phi_fix <- pt(t_stat, n_subj-1, lower.tail = FALSE)
 
     # --- Contemporaneous effects ---
     # Average across nodewise reg to get estimates and SEs
@@ -341,7 +341,7 @@ mlVAR_GC <- function(data, # data including both groups
     bet_2 <-  (l_out_emp[[2]]$results$Gamma_Theta$mean + t(l_out_emp[[2]]$results$Gamma_Theta$mean)) / 2
     bet_2se <- (l_out_emp[[2]]$results$Gamma_Theta$SE + t(l_out_emp[[2]]$results$Gamma_Theta$SE)) / 2
     t_stat <- abs(bet_1-bet_2)/ sqrt(bet_1se^2 + bet_2se^2)
-    m_pval_gam_fixed <- pt(t_stat, n_subj-1)
+    m_pval_gam_fixed <- pt(t_stat, n_subj-1, lower.tail = FALSE)
     m_pval_gam_fixed[upper.tri(m_pval_gam_fixed)] <- NA
     diag(m_pval_gam_fixed) <- NA
 
@@ -352,7 +352,7 @@ mlVAR_GC <- function(data, # data including both groups
     bet_2 <- (l_out_emp[[2]]$results$Gamma_Omega_mu$mean + t(l_out_emp[[2]]$results$Gamma_Omega_mu$mean)) / 2
     bet_2se <- (l_out_emp[[2]]$results$Gamma_Omega_mu$SE + t(l_out_emp[[2]]$results$Gamma_Omega_mu$SE)) / 2
     t_stat <- abs(bet_1-bet_2)/ sqrt(bet_1se^2 + bet_2se^2)
-    m_betw_sign <- pt(t_stat, n_subj-1)
+    m_betw_sign <- pt(t_stat, n_subj-1, lower.tail = FALSE)
     m_betw_sign[upper.tri(m_pval_gam_fixed)] <- NA
     diag(m_betw_sign) <- NA
 
