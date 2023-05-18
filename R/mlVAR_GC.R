@@ -323,7 +323,6 @@ mlVAR_GC <- function(data, # data including both groups
 
 
   # ------ Compute p-values based on standard errors [parametric test] -----
-
   if(test == "parametric") {
 
     # --- Lagged effects ---
