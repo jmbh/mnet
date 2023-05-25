@@ -290,9 +290,10 @@ mlVAR_GC <- function(data, # data including both groups
 
     # c.2) Contemp: RE sds
     m_pval_gam_RE_sd <- matrix(NA, p, p)
-    for(i in 2:p) for(j in 1:(i-1)) m_pval_gam_RE_sd[i,j] <- mean(abs(a_gam_RE_sd[i,j,])>abs(diffs_true$diff_gam_RE_sd[i,j]))
+    for(i in 2:p) for(j in 1:(i-1)) m_pval_gam_RE_sd[i,j] <- mean(abs(a_gam_RE_sd[i,j,])>abs(diffs_true$diff_gam_RE_sd[i,j]), na.rm=TRUE)
+    # Especially in conditions with low SNR, Random effects cannot be estimated and mlVAR/lme4 returns errors
 
-    # a) between
+    # a) Between
     m_pval_btw <- matrix(NA, p, p)
     for(i in 2:p) for(j in 1:(i-1)) m_pval_btw[i,j] <- mean(abs(a_between[i,j,])>abs(diffs_true$diff_between[i,j]), na.rm=TRUE)
     # Note: the na.rm=TRUE in the means is there so we can exclude the rare cases in which between-networks
@@ -320,7 +321,6 @@ mlVAR_GC <- function(data, # data including both groups
                     "Runtime_min" = runtime / 60)
 
   } # end if: permutation
-
 
   # ------ Compute p-values based on standard errors [parametric test] -----
   if(test == "parametric") {
