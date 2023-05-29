@@ -8,7 +8,8 @@
 Process_mlVAR <- function(object1,
                           object2,
                           contemporaneous = "orthogonal",
-                          temporal = "orthogonal") {
+                          temporal = "orthogonal",
+                          empirical = TRUE) {
 
   # Number of vars:
   p <- ncol(object1$results$Gamma_Omega_mu$mean)
@@ -20,17 +21,21 @@ Process_mlVAR <- function(object1,
   # for these cases we set the differences to zero here; later, when calculating
   # p-values we will just exclude those cases
 
-  if(any(is.na(object1$results$Omega_mu$pcor$mean))) {
+  check1 <- any(is.na(object1$results$Omega_mu$pcor$mean))
+  if(check1) {
     btw_1 <- matrix(NA, p, p)
   } else {
     btw_1 <- mlVAR::getNet(object1, "between", nonsig="show")
   }
-  if(any(is.na(object2$results$Omega_mu$pcor$mean))) {
+  check2 <- any(is.na(object2$results$Omega_mu$pcor$mean))
+  if(check2) {
     btw_2 <- matrix(NA, p, p)
   } else {
     btw_2 <- mlVAR::getNet(object2, "between", nonsig="show")
   }
   btw_diff <- btw_1 - btw_2
+  if(empirical & any(c(check1, check12))) warning("Random intercept variance was estimated to be zero for some variablesin mlVAR(). Therefore, no between-network can be obtained.")
+
 
   # b.1) VAR: fixed effects
   phi_fix_1 <- object1$results$Beta$mean
