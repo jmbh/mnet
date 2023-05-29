@@ -34,7 +34,7 @@ Process_mlVAR <- function(object1,
     btw_2 <- mlVAR::getNet(object2, "between", nonsig="show")
   }
   btw_diff <- btw_1 - btw_2
-  if(empirical & any(c(check1, check12))) warning("Random intercept variance was estimated to be zero for some variablesin mlVAR(). Therefore, no between-network can be obtained.")
+  if(empirical & any(c(check1, check2))) warning("Random intercept variance was estimated to be zero for some variablesin mlVAR(). Therefore, no between-network can be obtained.")
 
 
   # b.1) VAR: fixed effects
