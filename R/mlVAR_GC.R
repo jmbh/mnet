@@ -349,9 +349,6 @@ mlVAR_GC <- function(data, # data including both groups
 
     # --- Between ---
 
-    # l_out_emp[[1]]$results$Gamma_Omega_mu$mean
-    # l_out_emp[[1]]$results$Omega_mu$pcor$mean
-
     # Average across nodewise reg to get estimates and SEs
     bet_1 <- (l_out_emp[[1]]$results$Gamma_Omega_mu$mean + t(l_out_emp[[1]]$results$Gamma_Omega_mu$mean)) / 2
     bet_1se <- (l_out_emp[[1]]$results$Gamma_Omega_mu$SE + t(l_out_emp[[1]]$results$Gamma_Omega_mu$SE)) / 2
@@ -377,8 +374,6 @@ mlVAR_GC <- function(data, # data including both groups
                     "Runtime_min" = runtime / 60)
 
   } # end if: test=parametric
-
-  browser()
 
 
   # ------ Return Output -----
