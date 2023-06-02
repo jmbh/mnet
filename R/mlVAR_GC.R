@@ -71,10 +71,10 @@ mlVAR_GC <- function(data, # data including both groups
   if(length(v_intersec) > 0) stop("IDs need to be unique across two datasets.")
   }
 
-  # (7) Dependent Samples: Is every subject/unit in both groups?
-  if(paired == TRUE) {
-    if(!all(ids1 %in% ids2)) stop('For the paired test, each subject needs to have data in both "groups".')
-  }
+  # # (7) Dependent Samples: Is every subject/unit in both groups?
+  # if(paired == TRUE) {
+  #   if(!all(ids1 %in% ids2)) stop('For the paired test, each subject needs to have data in both "groups".')
+  # }
 
 
   # ------ Collect passed down arguments -----
@@ -178,6 +178,8 @@ mlVAR_GC <- function(data, # data including both groups
                          data_h0_2 <- m_data_cmb[v_ids %in% v_ids_2, ]
                          l_data_h0 <- list(data_h0_1, data_h0_2)
                        } # end if
+
+                       # browser()
 
 
 

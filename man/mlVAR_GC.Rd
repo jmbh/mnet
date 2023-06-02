@@ -39,7 +39,7 @@ The name of the column indicating group membership.
 The type of test used. Defaults to \code{test = "permutation"}, which performs a permutation test. Alternatively, \code{test = "parametric"} performs a parametric test based on confidence intervals. For the latter, a (vectorcritical p-value has to be specified.
 }
   \item{paired}{
-Indicates whether samples are paired or not (independent). If \code{paired = TRUE} indicates dependent samples. This requires that \code{idvar} needs to be specified such that each subject is contained in both groups, which implies that both groups have the same size. In this case, the permutation is computed based on within-person permutations and the parametric test is a paired t-test. The parametric test is not possible in this case since we are not able to obtain the required standard error from \code{mlVAR} models. If \code{paired = FALSE} the permutations are unrestricted. Defaults to \code{paired = FALSE}.
+Indicates whether samples are paired or not (independent). If \code{paired = TRUE} indicates dependent samples. This requires that \code{idvar} needs to be specified such that each subject is contained in both groups, which implies that both groups have the same size. Also, the function assumes that the subjects are ordered in the same way in both groups. In this case, the permutation is computed based on within-person permutationst. The parametric test is not possible in this case since we are not able to obtain the required standard error from \code{mlVAR} models. If \code{paired = FALSE} the permutations are unrestricted. Defaults to \code{paired = FALSE}.
 }
 
   \item{estimator}{
