@@ -11,9 +11,9 @@ Does inference on group differences in mlVAR models using a permutation test. Th
 \usage{
 mlVAR_GC(data, vars, idvar, dayvar = NULL,
          beepvar = NULL, groups, test = "permutation",
-         estimator, contemporaneous, temporal, nCores = 1,
-         nP = 500, saveModels = FALSE, verbose = FALSE,
-         pbar = TRUE)
+         paired = FALSE, estimator, contemporaneous,
+         temporal, nCores = 1, nP = 500, saveModels = FALSE,
+         verbose = FALSE, pbar = TRUE)
 }
 
 %- maybe also 'usage' for other objects documented here.
@@ -38,6 +38,10 @@ The name of the column indicating group membership.
   \item{test}{
 The type of test used. Defaults to \code{test = "permutation"}, which performs a permutation test. Alternatively, \code{test = "parametric"} performs a parametric test based on confidence intervals. For the latter, a (vectorcritical p-value has to be specified.
 }
+  \item{paired}{
+Indicates whether samples are paired or not (independent). If \code{paired = TRUE} indicates dependent samples. This requires that \code{idvar} needs to be specified such that each subject is contained in both groups, which implies that both groups have the same size. In this case, the permutation is computed based on within-person permutations and the parametric test is a paired t-test. The parametric test is not possible in this case since we are not able to obtain the required standard error from \code{mlVAR} models. If \code{paired = FALSE} the permutations are unrestricted. Defaults to \code{paired = FALSE}.
+}
+
   \item{estimator}{
 The estimator to be used. \code{"lmer"} for sequential univariate multi-level estimation, \code{"Mplus"} for multivariate Bayesian estimation (requires Mplus), and \code{"lm"} for fixed effects estimation. See also \code{mlVAR()}.
 }
