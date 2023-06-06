@@ -5,7 +5,7 @@
 \alias{Process_mlVAR}
 \alias{print.mlVAR_GC}
 \alias{ExampleData}
-\alias{dataFried}
+\alias{dataKoval13}
 
 \description{Internal mgm functions.}
 
