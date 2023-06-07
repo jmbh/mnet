@@ -1,3 +1,7 @@
+Changes in Version 0.1.2
+  o Some tweaks to the parametric test
+  o New example dataset by Koval et al. (2013)
+  o Included permutation test for paired samples
 Changes in Version 0.1.1
   o Fixed bug in input checks
   o Changed how groups are provided to the function mlVAR_GC; before with two separate arguments, now we specify a column name with the group variable to make it more consistent with the other arguments
