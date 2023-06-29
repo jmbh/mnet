@@ -23,6 +23,7 @@ mlVAR_GC <- function(data, # data including both groups
                      estimator, # same as in ml
                      contemporaneous, # same as in ml
                      temporal, # same as in ml
+                     scale, # is data scaled?
                      nCores = 1,
                      nP = 500, # number of samples in permutation test
                      saveModels = FALSE, # if TRUE, all models are saved; defaults to FALSE to save memory
@@ -76,6 +77,7 @@ mlVAR_GC <- function(data, # data including both groups
   if(missing(contemporaneous)) contemporaneous <- "orthogonal"
   if(missing(temporal)) temporal <- "orthogonal"
   if(missing(nCores)) nCores <- 1
+  if(missing(scale)) scale <- TRUE
 
   # Copy call
   Call <- list("vars" = vars,
@@ -87,6 +89,7 @@ mlVAR_GC <- function(data, # data including both groups
                "estimator" = estimator,
                "contemporaneous" = contemporaneous,
                "temporal" = temporal,
+               "scale" = scale,
                "nCores" = nCores,
                "nP" = nP,
                "saveModels" = saveModels,
@@ -173,9 +176,6 @@ mlVAR_GC <- function(data, # data including both groups
                          l_data_h0 <- list(data_h0_1, data_h0_2)
                        } # end if
 
-                       # browser()
-
-
 
                        # --- Fit mlVAR models ---
 
@@ -193,6 +193,7 @@ mlVAR_GC <- function(data, # data including both groups
                                                   estimator = estimator,
                                                   contemporaneous = contemporaneous,
                                                   temporal = temporal,
+                                                  scale = scale,
                                                   nCores = 1, # we use parallelization across resamples (not nodes in nodewise estimation here)
                                                   verbose = FALSE,
                                                   lags = 1) # TODO: later allow also higher order lags (see also below)
@@ -203,6 +204,7 @@ mlVAR_GC <- function(data, # data including both groups
                                                   estimator = estimator,
                                                   contemporaneous = contemporaneous,
                                                   temporal = temporal,
+                                                  scale = scale,
                                                   nCores = 1,
                                                   dayvar = dayvar, # now also provided
                                                   beepvar = beepvar,
@@ -284,6 +286,7 @@ mlVAR_GC <- function(data, # data including both groups
                                estimator = estimator,
                                contemporaneous = contemporaneous,
                                temporal = temporal,
+                               scale = scale,
                                nCores = 1,
                                verbose = FALSE,
                                lags = 1)
@@ -294,6 +297,7 @@ mlVAR_GC <- function(data, # data including both groups
                                estimator = estimator,
                                contemporaneous = contemporaneous,
                                temporal = temporal,
+                               scale = scale,
                                nCores = 1,
                                dayvar = dayvar,
                                beepvar = beepvar,
