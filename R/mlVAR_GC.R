@@ -1,4 +1,4 @@
-# jonashaslbeck@protonmail; June 2nd, 2023
+# jonashaslbeck@protonmail; April 1st, 2024
 
 # ------------------------------------------------------------
 # -------- Function for Permutation Test ---------------------
@@ -27,6 +27,7 @@ mlVAR_GC <- function(data, # data including both groups
                      nCores = 1,
                      nP = 500, # number of samples in permutation test
                      saveModels = FALSE, # if TRUE, all models are saved; defaults to FALSE to save memory
+                     saveEmpModels = FALSE,
                      verbose = FALSE, # if TRUE, verbose mode is activated in foreach
                      pbar = TRUE # if TRUE, a progress bar is being shown
 ) {
@@ -68,8 +69,8 @@ mlVAR_GC <- function(data, # data including both groups
 
   # (6) Are IDs unique across datasets? [required for indepdendent samples]
   if(paired == FALSE) {
-  v_intersec <- intersect(u_ids1, u_ids2)
-  if(length(v_intersec) > 0) stop("IDs need to be unique across two datasets.")
+    v_intersec <- intersect(u_ids1, u_ids2)
+    if(length(v_intersec) > 0) stop("IDs need to be unique across two datasets.")
   }
 
   # ------ Collect passed down arguments -----
@@ -322,9 +323,11 @@ mlVAR_GC <- function(data, # data including both groups
 
   if(test == "permutation") {
 
+    # browser()
+
     # b.1) VAR: fixed effects
     m_pval_phi_fix <- matrix(NA, p, p)
-    for(i in 1:p) for(j in 1:p) m_pval_phi_fix[i,j] <- mean(abs(a_phi_fixed[i,j,])>abs(diffs_true$diff_phi_fix[i,j,]))
+    for(i in 1:p) for(j in 1:p) m_pval_phi_fix[i,j] <- mean(abs(a_phi_fixed[i,j,]) > abs(diffs_true$diff_phi_fix[i,j,]))
 
     # b.2) VAR: RE sds
     m_pval_phi_RE_sd <- matrix(NA, p, p)
@@ -347,6 +350,9 @@ mlVAR_GC <- function(data, # data including both groups
 
     # ------ Create Output List -----
 
+    # Save the two mlVAR models estimated on the empirical data?
+    if(saveEmpModels==FALSE) l_out_emp <- NULL
+
     outlist <- list("Call" = Call,
                     "EmpDiffs" = list("Lagged_fixed" = diffs_true$diff_phi_fix,
                                       "Lagged_random" = diffs_true$diff_phi_RE_sd,
@@ -364,6 +370,7 @@ mlVAR_GC <- function(data, # data including both groups
                                       "Contemp_random" = a_gam_RE_sd,
                                       "Between" = a_between),
                     "Models" = l_out_ret,
+                    "EmpModels" = l_out_emp,
                     "Runtime_min" = runtime / 60)
 
   } # end if: permutation
@@ -406,6 +413,10 @@ mlVAR_GC <- function(data, # data including both groups
 
     # ------ Create Output List -----
 
+    # Save the two mlVAR models estimated on the empirical data?
+    if(saveEmpModels==FALSE) l_out_emp <- NULL
+
+
     outlist <- list("Call" = Call,
                     "EmpDiffs" = list("Lagged_fixed" = diffs_true$diff_phi_fix,
                                       "Lagged_random" = diffs_true$diff_phi_RE_sd,
@@ -415,6 +426,7 @@ mlVAR_GC <- function(data, # data including both groups
                     "Pval" = list("Lagged_fixed" = m_pval_phi_fix,
                                   "Contemp_fixed" = m_pval_gam_fixed,
                                   "Between" = m_betw_sign),
+                    "EmpModels" = l_out_emp,
                     "Runtime_min" = runtime / 60)
 
   } # end if: test=parametric

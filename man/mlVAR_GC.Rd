@@ -13,7 +13,8 @@ mlVAR_GC(data, vars, idvar, dayvar = NULL,
          beepvar = NULL, groups, test = "permutation",
          paired = FALSE, estimator, contemporaneous,
          temporal, scale, nCores = 1, nP = 500,
-         saveModels = FALSE, verbose = FALSE, pbar = TRUE)
+         saveModels = FALSE, saveEmpModels = FALSE,
+         verbose = FALSE, pbar = TRUE)
 }
 
 %- maybe also 'usage' for other objects documented here.
@@ -62,6 +63,9 @@ Number of permutations used to create the sampling distribution under the null h
 }
   \item{saveModels}{
 If true, the pair of mlVAR objects for each permutations are saved in the output. Defaults to \code{saveModels = FALSE} since the resulting output object can become very large.
+}
+  \item{saveEmpModels}{
+If true, the pair of mlVAR objects estimated on the two groups in the empirical data are returned in a list of two. The first entry contains the mlVAR model object for the first group. Defaults to \code{saveEmpModels = FALSE} to save space.
 }
   \item{verbose}{
 If true, the the verbose option in foreach, which is used in side \code{mlVAR_GC()}, is switched on. Defaults to \code{verbose = FALSE}.
