@@ -19,6 +19,7 @@ mlVAR_GC <- function(data, # data including both groups
                      beepvar = NULL,
                      groups, # indicates which case belongs to which group
                      test = "permutation", # can also be "parametric"
+                     partest = "Welch",
                      paired = FALSE,
                      estimator, # same as in ml
                      contemporaneous, # same as in ml
@@ -65,7 +66,9 @@ mlVAR_GC <- function(data, # data including both groups
   v_u_ids <- unique(v_ids)
   u_ids1 <- unique(ids1)
   u_ids2 <- unique(ids2)
-  n_subj <- length(u_ids1) + length(u_ids2)
+  n_subj_G1 <- length(u_ids1)
+  n_subj_G2 <- length(u_ids2)
+  n_subj <- n_subj_G1 + n_subj_G2
 
   # (6) Are IDs unique across datasets? [required for indepdendent samples]
   if(paired == FALSE) {
@@ -375,8 +378,6 @@ mlVAR_GC <- function(data, # data including both groups
 
   } # end if: permutation
 
-
-
   # ------ Compute p-values based on standard errors [parametric test] -----
   if(test == "parametric") {
 
@@ -385,8 +386,14 @@ mlVAR_GC <- function(data, # data including both groups
     bet_1se <- l_out_emp[[1]]$results$Beta$SE[, , 1]
     bet_2 <- l_out_emp[[2]]$results$Beta$mean[, , 1]
     bet_2se <- l_out_emp[[2]]$results$Beta$SE[, , 1]
+    # Compute degrees of freedom
+    if(partest == "Student") df = n_subj-2
+    if(partest == "Welch") df = ((bet_1se^2 / n_subj_G1 + bet_2se^2 / n_subj_G2)^2) /
+      ((bet_1se^4 / (n_subj_G1^2 * (n_subj_G1 - 1))) + (bet_2se^4 / (n_subj_G2^2 * (n_subj_G2 - 1))))
+    # Compute t-statistic
     t_stat <- abs(bet_1-bet_2)/ sqrt(bet_1se^2 + bet_2se^2)
-    m_pval_phi_fix <- pt(t_stat, df=n_subj-2, lower.tail = FALSE) * 2 # times two to make 2-sided
+    # get pvalues
+    m_pval_phi_fix <- pt(t_stat, df = df, lower.tail = FALSE) * 2 # times two to make 2-sided
 
     # --- Contemporaneous effects ---
     # Average across nodewise reg to get estimates and SEs
@@ -394,8 +401,14 @@ mlVAR_GC <- function(data, # data including both groups
     bet_1se <- (l_out_emp[[1]]$results$Gamma_Theta$SE + t(l_out_emp[[1]]$results$Gamma_Theta$SE)) / 2
     bet_2 <-  (l_out_emp[[2]]$results$Gamma_Theta$mean + t(l_out_emp[[2]]$results$Gamma_Theta$mean)) / 2
     bet_2se <- (l_out_emp[[2]]$results$Gamma_Theta$SE + t(l_out_emp[[2]]$results$Gamma_Theta$SE)) / 2
+    # Compute degrees of freedom
+    if(partest == "Student") df = n_subj-2
+    if(partest == "Welch") df = ((bet_1se^2 / n_subj_G1 + bet_2se^2 / n_subj_G2)^2) /
+      ((bet_1se^4 / (n_subj_G1^2 * (n_subj_G1 - 1))) + (bet_2se^4 / (n_subj_G2^2 * (n_subj_G2 - 1))))
+    # Compute t-statistic
     t_stat <- abs(bet_1-bet_2)/ sqrt(bet_1se^2 + bet_2se^2)
-    m_pval_gam_fixed <- pt(t_stat, df=n_subj-2, lower.tail = FALSE) * 2 # times two to make 2-sided
+    # get pvalues
+    m_pval_gam_fixed <- pt(t_stat, df = df, lower.tail = FALSE) * 2 # times two to make 2-sided
     m_pval_gam_fixed[upper.tri(m_pval_gam_fixed)] <- NA
     diag(m_pval_gam_fixed) <- NA
 
@@ -405,8 +418,14 @@ mlVAR_GC <- function(data, # data including both groups
     bet_1se <- (l_out_emp[[1]]$results$Gamma_Omega_mu$SE + t(l_out_emp[[1]]$results$Gamma_Omega_mu$SE)) / 2
     bet_2 <- (l_out_emp[[2]]$results$Gamma_Omega_mu$mean + t(l_out_emp[[2]]$results$Gamma_Omega_mu$mean)) / 2
     bet_2se <- (l_out_emp[[2]]$results$Gamma_Omega_mu$SE + t(l_out_emp[[2]]$results$Gamma_Omega_mu$SE)) / 2
+    # Compute degrees of freedom
+    if(partest == "Student") df = n_subj-2
+    if(partest == "Welch") df = ((bet_1se^2 / n_subj_G1 + bet_2se^2 / n_subj_G2)^2) /
+      ((bet_1se^4 / (n_subj_G1^2 * (n_subj_G1 - 1))) + (bet_2se^4 / (n_subj_G2^2 * (n_subj_G2 - 1))))
+    # Compute t-statistic
     t_stat <- abs(bet_1-bet_2)/ sqrt(bet_1se^2 + bet_2se^2)
-    m_betw_sign <- pt(t_stat, df=n_subj-2, lower.tail = FALSE) * 2 # times two to make 2-sided
+    # get pvalues
+    m_betw_sign <- pt(t_stat, df = df, lower.tail = FALSE) * 2 # times two to make 2-sided
     m_betw_sign[upper.tri(m_pval_gam_fixed)] <- NA
     diag(m_betw_sign) <- NA
 

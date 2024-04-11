@@ -11,8 +11,9 @@ Does inference on group differences in mlVAR models using a permutation test. Th
 \usage{
 mlVAR_GC(data, vars, idvar, dayvar = NULL,
          beepvar = NULL, groups, test = "permutation",
-         paired = FALSE, estimator, contemporaneous,
-         temporal, scale, nCores = 1, nP = 500,
+         partest = "Welch", paired = FALSE,
+         estimator, contemporaneous, temporal,
+         scale, nCores = 1, nP = 500,
          saveModels = FALSE, saveEmpModels = FALSE,
          verbose = FALSE, pbar = TRUE)
 }
@@ -38,6 +39,9 @@ The name of the column indicating group membership.
 }
   \item{test}{
 The type of test used. Defaults to \code{test = "permutation"}, which performs a permutation test. Alternatively, \code{test = "parametric"} performs a parametric test based on confidence intervals. For the latter, a (vectorcritical p-value has to be specified.
+}
+  \item{partest}{
+The type of parametric test used if \code{test = "parametric"} is selected. Defaults to \code{partest = "Welch"} for Welch's t-test, which does not assume equal population variances. The alternative is \code{partest = "Student"} for Student's t-test.
 }
   \item{paired}{
 Indicates whether samples are paired or not (independent). If \code{paired = TRUE} indicates dependent samples. This requires that \code{idvar} needs to be specified such that each subject is contained in both groups, which implies that both groups have the same size. Also, the function assumes that the subjects are ordered in the same way in both groups. In this case, the permutation is computed based on within-person permutationst. The parametric test is not possible in this case since we are not able to obtain the required standard error from \code{mlVAR} models. If \code{paired = FALSE} the permutations are unrestricted. Defaults to \code{paired = FALSE}.
