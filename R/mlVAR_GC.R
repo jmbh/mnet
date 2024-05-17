@@ -1,4 +1,4 @@
-# jonashaslbeck@protonmail; April 1st, 2024
+# jonashaslbeck@protonmail; May 17th, 2024
 
 # ------------------------------------------------------------
 # -------- Function for Permutation Test ---------------------
@@ -25,6 +25,7 @@ mlVAR_GC <- function(data, # data including both groups
                      contemporaneous, # same as in ml
                      temporal, # same as in ml
                      scale, # is data scaled?
+                     trueMeans, # allow specifying true means for developmental purposes
                      nCores = 1,
                      nP = 500, # number of samples in permutation test
                      saveModels = FALSE, # if TRUE, all models are saved; defaults to FALSE to save memory
@@ -82,6 +83,7 @@ mlVAR_GC <- function(data, # data including both groups
   if(missing(temporal)) temporal <- "orthogonal"
   if(missing(nCores)) nCores <- 1
   if(missing(scale)) scale <- TRUE
+  if(missing(trueMeans)) trueMeans <- NULL
 
   # Copy call
   Call <- list("vars" = vars,
@@ -282,31 +284,97 @@ mlVAR_GC <- function(data, # data including both groups
 
   for(j in 1:2) {
 
+    browser()
+
     # TODO: make this variable specification of dayvar/beepvar less hacky
     if(is.null(dayvar)) {
-      l_out_emp[[j]] <-  mlVAR(data = l_data[[j]],
-                               vars = vars,
-                               idvar = idvar,
-                               estimator = estimator,
-                               contemporaneous = contemporaneous,
-                               temporal = temporal,
-                               scale = scale,
-                               nCores = 1,
-                               verbose = FALSE,
-                               lags = 1)
+      if(is.null(trueMeans)) {
+
+        # Fit mlVAR
+        l_out_emp[[j]] <-  mlVAR(data = l_data[[j]],
+                                 vars = vars,
+                                 idvar = idvar,
+                                 estimator = estimator,
+                                 contemporaneous = contemporaneous,
+                                 temporal = temporal,
+                                 scale = scale,
+                                 nCores = 1,
+                                 verbose = FALSE,
+                                 lags = 1)
+      } else {
+
+        # browser()
+        #
+        # truemean_g1 <- cbind(unique(l_data[[1]]$id), # id
+        #                      rep(1, length(unique(l_data[[1]]$id))), # group
+        #                      matrix(0, length(unique(l_data[[1]]$id)), p)) # means
+        # truemean_g2 <- cbind(unique(l_data[[2]]$id), # id
+        #                      rep(2, length(unique(l_data[[2]]$id))), # group
+        #                      matrix(0, length(unique(l_data[[1]]$id)), p)) # means
+        # trueman_cmb <- rbind(truemean_g1, truemean_g2)
+        #
+        # # Get true means for group J
+        # trueMeans <- data.frame(trueman_cmb)
+        # colnames(trueMeans) <- c(idvar, "group", vars)
+        # head(trueMeans)
+
+        trueMeans_j <- trueMeans[trueMeans$id %in% l_data[[j]]$id, c(idvar, vars)]
+
+        # Fit mlVAR; note: true means spec currently only possible with mlVAR dev
+        l_out_emp[[j]] <-  mlVAR(data = l_data[[j]],
+                                 vars = vars,
+                                 idvar = idvar,
+                                 estimator = estimator,
+                                 contemporaneous = contemporaneous,
+                                 temporal = temporal,
+                                 scale = scale,
+                                 trueMeans = trueMeans_j,
+                                 nCores = 1,
+                                 verbose = FALSE,
+                                 lags = 1)
+
+      } # end if: true means specified?
+
     } else {
-      l_out_emp[[j]] <-  mlVAR(data = l_data[[j]],
-                               vars = vars,
-                               idvar = idvar,
-                               estimator = estimator,
-                               contemporaneous = contemporaneous,
-                               temporal = temporal,
-                               scale = scale,
-                               nCores = 1,
-                               dayvar = dayvar,
-                               beepvar = beepvar,
-                               verbose = FALSE,
-                               lags = 1)
+
+      if(is.null(trueMeans)) {
+
+        # Fit mlVAR
+        l_out_emp[[j]] <-  mlVAR(data = l_data[[j]],
+                                 vars = vars,
+                                 idvar = idvar,
+                                 estimator = estimator,
+                                 contemporaneous = contemporaneous,
+                                 temporal = temporal,
+                                 scale = scale,
+                                 nCores = 1,
+                                 dayvar = dayvar,
+                                 beepvar = beepvar,
+                                 verbose = FALSE,
+                                 lags = 1)
+
+      } else {
+
+        # Get true means for group J
+        trueMeans_j <- trueMeans[trueMeans$id %in% l_data[[j]]$id, c(idvar, vars)]
+
+        # Fit mlVAR; note: true means spec currently only possible with mlVAR dev
+        l_out_emp[[j]] <-  mlVAR(data = l_data[[j]],
+                                 vars = vars,
+                                 idvar = idvar,
+                                 estimator = estimator,
+                                 contemporaneous = contemporaneous,
+                                 temporal = temporal,
+                                 scale = scale,
+                                 trueMeans = trueMeans_j,
+                                 nCores = 1,
+                                 dayvar = dayvar,
+                                 beepvar = beepvar,
+                                 verbose = FALSE,
+                                 lags = 1)
+
+      } # end if: true means specified?
+
     } # end if: dayvar specified
 
   } # Loop: 2 groups

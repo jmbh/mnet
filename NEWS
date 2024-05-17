@@ -1,4 +1,6 @@
 Changes in Version 0.1.2
+  o New argument "trueMeans" in mlVAR_GC() for developmental purposes
+  o Made Student's t-test default for parametric test
   o Some tweaks to the parametric test
   o New example dataset by Koval et al. (2013)
   o Included permutation test for paired samples
