@@ -284,7 +284,7 @@ mlVAR_GC <- function(data, # data including both groups
 
   for(j in 1:2) {
 
-    browser()
+    # browser()
 
     # TODO: make this variable specification of dayvar/beepvar less hacky
     if(is.null(dayvar)) {
