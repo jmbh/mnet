@@ -38,7 +38,7 @@ Optional: The name of the column indicating measurement occasion per day. Adding
 The name of the column indicating group membership.
 }
   \item{test}{
-The type of test used. Defaults to \code{test = "permutation"}, which performs a permutation test. Alternatively, \code{test = "parametric"} performs a parametric test based on confidence intervals. For the latter, a (vectorcritical p-value has to be specified.
+The type of test used. Defaults to \code{test = "permutation"}, which performs a permutation test. Alternatively, \code{test = "parametric"} performs a parametric test based on confidence intervals.
 }
   \item{partest}{
 The type of parametric test used if \code{test = "parametric"} is selected. Defaults to \code{partest = "Welch"} for Welch's t-test, which does not assume equal population variances. The alternative is \code{partest = "Student"} for Student's t-test.
