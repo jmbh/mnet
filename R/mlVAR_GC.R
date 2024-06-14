@@ -85,7 +85,7 @@ mlVAR_GC <- function(data, # data including both groups
   if(missing(temporal)) temporal <- "orthogonal"
   if(missing(nCores)) nCores <- 1
   if(missing(scale)) scale <- TRUE
-  if(missing(trueMeans)) trueMeans <- NULL
+  # if(missing(trueMeans)) trueMeans <- NULL
 
   # Copy call
   Call <- list("vars" = vars,
