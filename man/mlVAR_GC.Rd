@@ -114,7 +114,7 @@ out <- mlVAR_GC(data = ExampleData,
                 idvar = "id",
                 groups = "group",
                 nCores = 2, # choose max cores possible on your machine
-                nP = 2) # Should be more in practice, see paper!
+                nP = 2) # Should be much more in practice, see paper!
 
 # P-values for the five parameter types:
 out$Pval

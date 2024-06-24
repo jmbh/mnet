@@ -135,14 +135,22 @@ mlVAR_GC <- function(data, # data including both groups
       registerDoParallel(cl)
     }
 
+    # Define a function that suppresses package startup messages
+    quiet_library <- function(pkg) {
+      suppressPackageStartupMessages(library(pkg, character.only = TRUE))
+    }
+
     # Call foreach:
     out_P <- foreach(b = 1:nP,
-                     .packages = c("mlVAR", "mnet"),
+                     .packages = c("mlVAR"),
                      .export = c("m_data_cmb", "vars", "idvar", "estimator",
                                  "contemporaneous", "temporal", "totalN", "v_Ns",
-                                 "v_ids", "pb", "pbar", "dayvar", "beepvar", "paired"),
+                                 "v_ids", "pb", "pbar", "dayvar", "beepvar", "paired",
+                                 "quiet_library"),
                      .verbose = verbose) %dopar% {
 
+                       # Suppress starting message of mnet
+                       quiet_library("mnet")
 
                        # --- Make permutation ---
 
@@ -428,8 +436,6 @@ mlVAR_GC <- function(data, # data including both groups
 
   if(test == "permutation") {
 
-    # browser()
-
     # b.1) VAR: fixed effects
     m_pval_phi_fix <- matrix(NA, p, p)
     for(i in 1:p) for(j in 1:p) m_pval_phi_fix[i,j] <- mean(abs(a_phi_fixed[i,j,]) > abs(diffs_true$diff_phi_fix[i,j,]))
@@ -489,7 +495,7 @@ mlVAR_GC <- function(data, # data including both groups
     bet_2 <- l_out_emp[[2]]$results$Beta$mean[, , 1]
     bet_2se <- l_out_emp[[2]]$results$Beta$SE[, , 1]
     # Compute degrees of freedom
-    if(partest == "Student") df = n_subj-2
+    if(partest == "Student") df = n_subj - 2
     if(partest == "Welch") df = ((bet_1se^2 / n_subj_G1 + bet_2se^2 / n_subj_G2)^2) /
       ((bet_1se^4 / (n_subj_G1^2 * (n_subj_G1 - 1))) + (bet_2se^4 / (n_subj_G2^2 * (n_subj_G2 - 1))))
     # Compute t-statistic
@@ -526,7 +532,7 @@ mlVAR_GC <- function(data, # data including both groups
       ((bet_1se^4 / (n_subj_G1^2 * (n_subj_G1 - 1))) + (bet_2se^4 / (n_subj_G2^2 * (n_subj_G2 - 1))))
     # Compute t-statistic
     t_stat <- abs(bet_1-bet_2)/ sqrt(bet_1se^2 + bet_2se^2)
-    # get pvalues
+    # get p-values
     m_betw_sign <- pt(t_stat, df = df, lower.tail = FALSE) * 2 # times two to make 2-sided
     m_betw_sign[upper.tri(m_pval_gam_fixed)] <- NA
     diag(m_betw_sign) <- NA

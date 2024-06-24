@@ -1,9 +1,8 @@
-# jonashaslbeck@protonmail; April 17, 2023
+# jonashaslbeck@protonmail; June 18, 2023
 
 # ------------------------------------------------------------
 # -------- Function to Process mlVAR Outputs -----------------
 # ------------------------------------------------------------
-
 
 Process_mlVAR <- function(object1,
                           object2,
@@ -15,27 +14,47 @@ Process_mlVAR <- function(object1,
   p <- ncol(object1$results$Gamma_Omega_mu$mean)
 
   # a) Between network (using function from mlVAR package)
+
   # For very low number of subjects close to the boundary of identifiability
   # it is possible that lme4 in mlVAR estimates zero variances for random intercepts
   # which then does not allow one to estimate the between person network
   # for these cases we set the differences to zero here; later, when calculating
   # p-values we will just exclude those cases
 
-  check1 <- any(is.na(object1$results$Omega_mu$pcor$mean))
+  # # Here we use partial correlations [OLD]:
+  # check1 <- any(is.na(object1$results$Omega_mu$pcor$mean))
+  # if(check1) {
+  #   btw_1 <- matrix(NA, p, p)
+  # } else {
+  #   btw_1 <- mlVAR::getNet(object1, "between", nonsig="show")
+  # }
+  # check2 <- any(is.na(object2$results$Omega_mu$pcor$mean))
+  # if(check2) {
+  #   btw_2 <- matrix(NA, p, p)
+  # } else {
+  #   btw_2 <- mlVAR::getNet(object2, "between", nonsig="show")
+  # }
+  # btw_diff <- btw_1 - btw_2
+  # if(empirical & any(c(check1, check2))) warning("Random intercept variance was estimated to be zero for some variablesin mlVAR(). Therefore, no between-network can be obtained.")
+
+  # We use averaged regression coefficients, to use the same parameter as in the parametric test
+  # Note: also computing the partial correlations requires averaging regression coefficients
+  check1 <- any(is.na(object1$results$Gamma_Omega_mu$mean))
   if(check1) {
     btw_1 <- matrix(NA, p, p)
   } else {
-    btw_1 <- mlVAR::getNet(object1, "between", nonsig="show")
+    btw_1 <- object1$results$Gamma_Omega_mu$mean
+    btw_1 <- (btw_1 + t(btw_1)) / 2
   }
-  check2 <- any(is.na(object2$results$Omega_mu$pcor$mean))
+  check2 <- any(is.na(object2$results$Gamma_Omega_mu$mean))
   if(check2) {
     btw_2 <- matrix(NA, p, p)
   } else {
-    btw_2 <- mlVAR::getNet(object2, "between", nonsig="show")
+    btw_2 <- object2$results$Gamma_Omega_mu$mean
+    btw_2 <- (btw_2 + t(btw_2)) / 2
   }
   btw_diff <- btw_1 - btw_2
   if(empirical & any(c(check1, check2))) warning("Random intercept variance was estimated to be zero for some variablesin mlVAR(). Therefore, no between-network can be obtained.")
-
 
   # b.1) VAR: fixed effects
   phi_fix_1 <- object1$results$Beta$mean
