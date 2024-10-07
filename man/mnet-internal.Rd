@@ -4,6 +4,7 @@
 
 \alias{Process_mlVAR}
 \alias{print.mlVAR_GC}
+\alias{f_pdb}
 \alias{ExampleData}
 \alias{dataKoval13}
 

@@ -1,7 +1,7 @@
 Package: mnet
 Type: Package
 Title: Modeling Group Differences and Moderation Effects in Statistical Network Models
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: c(
   person("Jonas", "Haslbeck", email = "jonashaslbeck@protonmail.com",role = c("aut", "cre")))
 Maintainer: Jonas Haslbeck <jonashaslbeck@protonmail.com>
