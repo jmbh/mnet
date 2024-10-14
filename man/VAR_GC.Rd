@@ -8,48 +8,65 @@ Function to test whether parameters of two VAR(1) models are different
 }
 \usage{
 VAR_GC(data, vars, dayvar, beepvar,
-       groups, boot = FALSE,
-       nBoot = 1000)
+       groups, test = "parametric",
+       nP = 1000)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{
-%%     ~~Describe \code{data} here~~
+A n x p data matrix.
 }
   \item{vars}{
-%%     ~~Describe \code{vars} here~~
+An integeger vector indicating the column numbers of the variables that should be modeled in the pair of VAR models.
 }
   \item{dayvar}{
-%%     ~~Describe \code{dayvar} here~~
+Integener indicating the column number of the variable specifying the day of the measurement point. This is designed for EMA studies. If not applicable, this argument can be left unspecified.
 }
   \item{beepvar}{
-%%     ~~Describe \code{beepvar} here~~
+Integener indicating the column number of the variable specifying the number of the measurement occasion during a specific day. The full set of measurement occasions has to be consecutive and increasing sequence of integers (e.g., 1, 2,..., 5). This is designed for EMA studies. If not applicable, this argument can be left unspecified.
 }
   \item{groups}{
-%%     ~~Describe \code{groups} here~~
+Integer indiciating the column number of the group variable. The values of the group variable have to be 1 and 2.
 }
-  \item{boot}{
-NOT IMPLEMENTED YET: If \code{boot = TRUE} p-values are computed using bootstrapping instead of normal theory.
+  \item{test}{
+If \code{test = "parmetric"} p-values are computed using the t-distribution, using the Welch-Satterthwaite equation to approximate degrees of freedom (df). This is the default. Alternatively, \code{test = "permutation"} uses a permutation to sample from a distribution in which the null hypothesis that no group differences exist is true. The permutation uses \code{nP} permuted datasets.
 }
-  \item{nBoot}{
-%%     ~~Describe \code{nBoot} here~~
+  \item{nP}{
+The number of permuted datasets used if  \code{test = "permutation"}.
 }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
+
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+
+\item{Call}{
+Returns the call of the function
+}
+
+\item{phi_diff}{
+A p x p matrix of differences in phi coefficients (Group 1 - Group 2) in the empirical data. The test-statistics.
+}
+
+\item{phi_pval}{
+A p x p matrix with pvalues corresponding to \code{phi_diff}.
+}
+
+\item{int_diff}{
+A p numeric vector of differences in intercepts (Group 1 - Group 2).
+}
+
+\item{int_pvar}{
+A p numeric vector of pvalues corresponding to \code{int_diff}
+}
+
 }
 \references{
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+Jonas Haslbeck <jonashaslbeck@protonmail.com>
 }
 \note{
 %%  ~~further notes~~
@@ -104,6 +121,7 @@ round(out$phi_pval, 2)
 round(out$phi_pval[2,1], 2) # worked!
 
 }
+
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
