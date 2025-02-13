@@ -73,10 +73,16 @@ mlVAR_GC <- function(data, # data including both groups
   n_subj_G2 <- length(u_ids2)
   n_subj <- n_subj_G1 + n_subj_G2
 
-  # (6) Are IDs unique across datasets? [required for indepdendent samples]
+  # (6) Independent samples test: Are IDs unique across datasets? [required for indepdendent samples]
   if(paired == FALSE) {
     v_intersec <- intersect(u_ids1, u_ids2)
     if(length(v_intersec) > 0) stop("IDs need to be unique across two datasets.")
+  }
+
+  # (7) Paired samples test: do we have measurements in both "groups" form each person?
+  if(paired == TRUE) {
+    ind_same_IDs <- all(sort(u_ids1) == sort(u_ids2))
+    if(!ind_same_IDs) stop("Data for each ID is required in both 'groups'.")
   }
 
   # ------ Collect passed down arguments -----
@@ -156,6 +162,8 @@ mlVAR_GC <- function(data, # data including both groups
 
                        # For independent samples
                        if(paired == FALSE) {
+                         # Here we randomly distribute persons across the group, keeping with the original group sizes
+
                          # This is done in a way that keeps the size in each group exactly the same as in the real groups
                          v_ids_rnd <- v_u_ids[sample(1:totalN, size=totalN, replace=FALSE)]
                          v_ids_1 <- v_ids_rnd[1:v_Ns[1]]
@@ -169,28 +177,24 @@ mlVAR_GC <- function(data, # data including both groups
 
                        # For dependent samples
                        if(paired == TRUE) {
+                         # here we go through each participant, and switch the group label (or not), determined by a coin flip
 
-                         ids1 <- sapply(data1[, idvar], as.character)
-                         ids2 <- sapply(data2[, idvar], as.character)
-                         v_ids <- c(ids1, ids2)
+                         unique_IDs <- unique(data[, idvar])
+                         n_unique_IDs <- length(unique_IDs)
 
-                         ids1_uq <- unique(ids1)
-                         ids2_uq <- unique(ids2)
-                         m_ids_uq <- cbind(ids1_uq, ids2_uq)
-                         n_uq <- nrow(m_ids_uq)
-                         m_ids_uq_perm <- matrix(NA, n_uq, 2)
-                         for(i in 1:n_uq) {
-                           draw_i <- sample(1:2, size=1)
-                           if(draw_i==1) m_ids_uq_perm[i, ] <- m_ids_uq[i, ] else  m_ids_uq_perm[i, ] <- m_ids_uq[i, 2:1]
-                         }
-                         v_ids_1 <- m_ids_uq_perm[, 1]
-                         v_ids_2 <- m_ids_uq_perm[, 2]
+                         # Create copies of dataset
+                         data_perm <- data
 
-                         # Split data based on permutations
-                         data_h0_1 <- m_data_cmb[v_ids %in% v_ids_1, ]
-                         data_h0_2 <- m_data_cmb[v_ids %in% v_ids_2, ]
-                         l_data_h0 <- list(data_h0_1, data_h0_2)
-                       } # end if
+                         for(i in 1:n_unique_IDs) {
+                           flip <- sample(c(FALSE, TRUE), size=1, prob = c(0.5, 0.5))
+                           if(flip) data_perm[data_perm[, idvar] == unique_IDs[i], groups] <- abs(data_perm[data_perm[, idvar] == unique_IDs[i], groups] -3)
+                         } # end: permuting
+
+                         # Collect two permuted datasets in list
+                         l_data_h0 <- list(data_perm[data_perm[, groups]==1, ],
+                                           data_perm[data_perm[, groups]==2, ])
+
+                       } # end if: paired?
 
 
                        # --- Fit mlVAR models ---

@@ -1,5 +1,6 @@
 Changes in Version 0.1.4
-  O Added function to compare N=1 (non-multilevel) VAR models
+  o Added function to compare N=1 (non-multilevel) VAR models
+  o Fixed bug in paired version of the test (the two permuted datasets were the same and all sampling distributions of differences therefore equal to zero)
 Changes in Version 0.1.3
   o In the permutation test, group differences in partial correlations between random intercepts (the "between-network") are now tested based on averaged regression coefficients instead of partial correlations based on averaged regression coefficients. This was changed such that the permutation test uses the same parameters as the parametric test. We use the regression coefficients for the latter, because we have standard errors for those.
 Changes in Version 0.1.2

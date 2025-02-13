@@ -5,7 +5,7 @@ VAR_GC <- function(data,
                    beepvar,
                    groups,
                    test="parametric",  # TO ADD
-                   nP=100) {
+                   nP=1000) {
 
   # --- Input Checks ---
   # TODO: Add mode, match at least mlVAR_GC()
