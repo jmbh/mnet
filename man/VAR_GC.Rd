@@ -35,9 +35,6 @@ If \code{test = "parmetric"} p-values are computed using the t-distribution, usi
 The number of permuted datasets used if  \code{test = "permutation"}.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 
 \value{
 
@@ -62,21 +59,13 @@ A p numeric vector of pvalues corresponding to \code{int_diff}
 }
 
 }
-\references{
-%% ~put references to the literature/web site here ~
-}
 \author{
 Jonas Haslbeck <jonashaslbeck@protonmail.com>
-}
-\note{
-%%  ~~further notes~~
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
+
 \examples{
 
 \donttest{

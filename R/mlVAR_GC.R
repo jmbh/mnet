@@ -152,7 +152,7 @@ mlVAR_GC <- function(data, # data including both groups
                      .export = c("m_data_cmb", "vars", "idvar", "estimator",
                                  "contemporaneous", "temporal", "totalN", "v_Ns",
                                  "v_ids", "pb", "pbar", "dayvar", "beepvar", "paired",
-                                 "quiet_library"),
+                                 "quiet_library", "saveModels"),
                      .verbose = verbose) %dopar% {
 
                        # Suppress starting message of mnet
@@ -260,18 +260,13 @@ mlVAR_GC <- function(data, # data including both groups
                        diffs_b <- Process_mlVAR(object1 = l_pair_b[[1]],
                                                 object2 = l_pair_b[[2]],
                                                 empirical = FALSE)
-
-                       outlist_b <- list("diff_between" = diffs_b$diff_between,
-                                         "diff_phi_fix" = diffs_b$diff_phi_fix,
-                                         "diff_phi_RE_sd" = diffs_b$diff_phi_RE_sd,
-                                         "diff_gam_fix" = diffs_b$diff_gam_fix,
-                                         "diff_gam_RE_sd" = diffs_b$diff_between,
-                                         "Models" = l_models)
+                       # Attach model objects to output list
+                       diffs_b$Models <- l_models
 
                        # Set progress bar
                        if(pbar) setTxtProgressBar(pb, b)
 
-                       return(outlist_b)
+                       return(diffs_b)
 
                      } # end foreach: over permutations
 
@@ -293,14 +288,34 @@ mlVAR_GC <- function(data, # data including both groups
     a_gam_fixed <- array(NA, dim=c(p, p, nP))
     a_gam_RE_sd <- array(NA, dim=c(p, p, nP))
 
+    # Make space also for raw parameters
+    a_between_raw <- array(NA, dim=c(p, p, nP, 2))
+    a_phi_fixed_raw <- array(NA, dim=c(p, p, nP, 2))
+    a_phi_RE_sd_raw <- array(NA, dim=c(p, p, nP, 2))
+    a_gam_fixed_raw <- array(NA, dim=c(p, p, nP, 2))
+    a_gam_RE_sd_raw <- array(NA, dim=c(p, p, nP, 2))
+
+    ## Fill into arrays
     for(b in 1:nP) {
 
-      # Fill into arrays
-      a_between[, , b] <- out_P[[b]]$diff_between
-      a_phi_fixed[, , b] <- out_P[[b]]$diff_phi_fix[, , 1] # TODO: adapt also to higher order lags
-      a_phi_RE_sd[, , b] <- out_P[[b]]$diff_phi_RE_sd[, , 1] # TODO: adapt also to higher order lags
-      a_gam_fixed[, , b] <- out_P[[b]]$diff_gam_fix
-      a_gam_RE_sd[, , b] <- out_P[[b]]$diff_gam_RE_sd
+      # Compute Differences
+      a_between[, , b] <- out_P[[b]]$between[[1]] - out_P[[b]]$between[[2]]
+      a_phi_fixed[, , b] <- out_P[[b]]$phi_fix[[1]][, , 1] - out_P[[b]]$phi_fix[[2]][, , 1] # TODO: adapt also to higher order lags
+      a_phi_RE_sd[, , b] <- out_P[[b]]$phi_RE_sd[[1]][, , 1] - out_P[[b]]$phi_RE_sd[[2]][, , 1] # TODO: adapt also to higher order lags
+      a_gam_fixed[, , b] <- out_P[[b]]$gam_fix[[1]] - out_P[[b]]$gam_fix[[2]]
+      a_gam_RE_sd[, , b] <- out_P[[b]]$gam_RE_sd[[1]] - out_P[[b]]$gam_RE_sd[[2]]
+
+      # Collect raw parameters
+      a_between_raw[, , b, 1] <- out_P[[b]]$between[[1]]
+      a_between_raw[, , b, 2] <- out_P[[b]]$between[[2]]
+      a_phi_fixed_raw[, , b, 1] <- out_P[[b]]$phi_fix[[1]][, , 1]
+      a_phi_fixed_raw[, , b, 2] <- out_P[[b]]$phi_fix[[2]][, , 1]
+      a_phi_RE_sd_raw[, , b, 1] <- out_P[[b]]$phi_RE_sd[[1]][, , 1]
+      a_phi_RE_sd_raw[, , b, 2] <- out_P[[b]]$phi_RE_sd[[2]][, , 1]
+      a_gam_fixed_raw[, , b, 1] <- out_P[[b]]$gam_fix[[1]]
+      a_gam_fixed_raw[, , b, 2] <- out_P[[b]]$gam_fix[[2]]
+      a_gam_RE_sd_raw[, , b, 1] <- out_P[[b]]$gam_RE_sd[[1]]
+      a_gam_RE_sd_raw[, , b, 2] <- out_P[[b]]$gam_RE_sd[[2]]
 
       if(saveModels) l_out_mods[[b]] <- out_P[[b]]$Models
 
@@ -355,6 +370,8 @@ mlVAR_GC <- function(data, # data including both groups
 
       # Both are specified
     } else {
+
+      # browser()
 
       # Fit mlVAR
       l_out_emp[[j]] <-  mlVAR(data = l_data[[j]],
@@ -429,12 +446,19 @@ mlVAR_GC <- function(data, # data including both groups
   if(pbar)  setTxtProgressBar(pb, nP + 1)
   runtime <- proc.time()[3] - timer_total
 
+  # browser()
 
   # --- Matrices with True differences ---
 
   diffs_true <- Process_mlVAR(object1 = l_out_emp[[1]],
                               object2 = l_out_emp[[2]])
 
+  # Compute differences for empirical
+  diffs_true$diff_phi_fix <- diffs_true$phi_fix[[1]] - diffs_true$phi_fix[[2]]
+  diffs_true$diff_phi_RE_sd <- diffs_true$phi_RE_sd[[1]] - diffs_true$phi_RE_sd[[2]]
+  diffs_true$diff_gam_fix <- diffs_true$gam_fix[[1]] - diffs_true$gam_fix[[2]]
+  diffs_true$diff_gam_RE_sd <- diffs_true$gam_RE_sd[[1]] - diffs_true$gam_RE_sd[[2]]
+  diffs_true$diff_between <- diffs_true$between[[1]] - diffs_true$between[[2]]
 
   # ------ Compute p-values based on permutation test -----
 
@@ -442,11 +466,11 @@ mlVAR_GC <- function(data, # data including both groups
 
     # b.1) VAR: fixed effects
     m_pval_phi_fix <- matrix(NA, p, p)
-    for(i in 1:p) for(j in 1:p) m_pval_phi_fix[i,j] <- mean(abs(a_phi_fixed[i,j,]) > abs(diffs_true$diff_phi_fix[i,j,]))
+    for(i in 1:p) for(j in 1:p) m_pval_phi_fix[i,j] <- mean(abs(a_phi_fixed[i,j,]) > abs(diffs_true$diff_phi_fix[i, j, ]))
 
     # b.2) VAR: RE sds
     m_pval_phi_RE_sd <- matrix(NA, p, p)
-    for(i in 1:p) for(j in 1:p) m_pval_phi_RE_sd[i,j] <- mean(abs(a_phi_RE_sd[i,j,])>abs(diffs_true$diff_phi_RE_sd[i,j,]))
+    for(i in 1:p) for(j in 1:p) m_pval_phi_RE_sd[i,j] <- mean(abs(a_phi_RE_sd[i,j,]) > abs(diffs_true$diff_phi_RE_sd[i,j,]))
 
     # c.1) Contemp: fixed effects
     m_pval_gam_fixed <- matrix(NA, p, p)
@@ -474,16 +498,21 @@ mlVAR_GC <- function(data, # data including both groups
                                       "Contemp_fixed" = diffs_true$diff_gam_fix,
                                       "Contemp_random" = diffs_true$diff_gam_RE_sd,
                                       "Between" = diffs_true$diff_between),
+                    "Emp" = list("Lagged_fixed" = diffs_true$phi_fix,
+                                 "Lagged_random" = diffs_true$phi_RE_sd,
+                                 "Contemp_fixed" = diffs_true$gam_fix,
+                                 "Contemp_random" = diffs_true$gam_RE_sd,
+                                 "Between" = diffs_true$between),
                     "Pval" = list("Lagged_fixed" = m_pval_phi_fix,
                                   "Lagged_random" = m_pval_phi_RE_sd,
                                   "Contemp_fixed" = m_pval_gam_fixed,
                                   "Contemp_random" = m_pval_gam_RE_sd,
                                   "Between" = m_pval_btw),
-                    "SampDist" = list("Lagged_fixed" = a_phi_fixed,
-                                      "Lagged_random" = a_phi_RE_sd,
-                                      "Contemp_fixed" = a_gam_fixed,
-                                      "Contemp_random" = a_gam_RE_sd,
-                                      "Between" = a_between),
+                    "SampDist" = list("Lagged_fixed" = a_phi_fixed_raw,
+                                      "Lagged_random" = a_phi_RE_sd_raw,
+                                      "Contemp_fixed" = a_gam_fixed_raw,
+                                      "Contemp_random" = a_gam_RE_sd_raw,
+                                      "Between" = a_between_raw),
                     "Models" = l_out_ret,
                     "EmpModels" = l_out_emp,
                     "Runtime_min" = runtime / 60)

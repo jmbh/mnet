@@ -4,7 +4,8 @@ exportPattern("^[[:alpha:]]+")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 importFrom("mlVAR", "mlVAR")
 importFrom("mlVAR", "getNet")
- importFrom("stats", "pt")
+importFrom("stats", "pt")
+importFrom("stats", "coef", "lm")
 
 # For parallelization
 import("foreach")

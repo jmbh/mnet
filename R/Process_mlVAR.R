@@ -1,4 +1,4 @@
-# jonashaslbeck@protonmail; June 18, 2023
+# jonashaslbeck@protonmail; March 24, 2026
 
 # ------------------------------------------------------------
 # -------- Function to Process mlVAR Outputs -----------------
@@ -81,11 +81,13 @@ Process_mlVAR <- function(object1,
   Gam_RE_sd_diff <- Gam_RE_sd_1 - Gam_RE_sd_2
 
 
-  outlist <- list("diff_between" = btw_diff,
-                  "diff_phi_fix" = phi_fix_diff,
-                  "diff_phi_RE_sd" = phi_RE_sd_diff,
-                  "diff_gam_fix" = Gam_fix_diff,
-                  "diff_gam_RE_sd" = Gam_RE_sd_diff)
+  ## Prepare output list
+  # Now both the differences and the raw parameters
+  outlist <- list("between" = list(btw_1, btw_2),
+                  "phi_fix" = list(phi_fix_1, phi_fix_2),
+                  "phi_RE_sd" = list(phi_RE_sd_1, phi_RE_sd_2),
+                  "gam_fix" = list(Gam_fix_1, Gam_fix_2),
+                  "gam_RE_sd" = list(Gam_RE_sd_1, Gam_RE_sd_2))
 
   return(outlist)
 
