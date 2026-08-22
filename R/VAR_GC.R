@@ -49,7 +49,7 @@ VAR_GC <- function(data,
     int1[j, 1] <- coefs1[1]
     int1[j, 2] <- SEs1[1]
     # Fit Model 2
-    mod_j2 <- lm(data2x[which(v_pdb1), j] ~ data2x[which(v_pdb1)-1, ])
+    mod_j2 <- lm(data2x[which(v_pdb2), j] ~ data2x[which(v_pdb2)-1, ])
     coefs2 <- coef(mod_j2)
     SEs2 <- coef(summary(mod_j2))[, "Std. Error"]
     phi2[j, , 1] <- coefs2[-1]
